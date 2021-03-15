@@ -24,7 +24,10 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.RamseteController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
@@ -89,8 +92,35 @@ public class Robot extends TimedRobot {
  // double liftMax =446314.000000;
  // double liftMin =50000.0;
 
+  /** PathWeaver Code **/
+  RobotPathController pathController;
+  private final double b = 0.0;
+  private final double zeta = 0.0;
+  private final double kv = 0.0;
+  private final double ka = 0.0;
+  private final double ks = 0.0;
+  private final double robotWidth = 0.0; //TODO: measure the distance between wheel in METERS
+  PIDController leftGroup = new PIDController(0, 0, 0);
+  PIDController rightGroup = new PIDController(0, 0, 0);
+  CTREEncoder leftEncoder = new CTREEncoder(left1, false, 1.0);
+  CTREEncoder rightEncoder = new CTREEncoder(right1, false, 1.0);
+
   @Override
   public void robotInit() {
+    pathController = new RobotPathController(
+      mainDrive,
+      left,
+      right,
+      "bouncepath",
+      gyro,
+      new RamseteController(b, zeta),
+      new SimpleMotorFeedforward(ks, kv, ka),
+      new DifferentialDriveKinematics(robotWidth),
+      leftGroup,
+      rightGroup,
+      leftEncoder,
+      rightEncoder
+      );
     rightShooter.setInverted(true);
     accelerator.setInverted(true);
     intake.setInverted(true);
@@ -113,11 +143,14 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    pathController.initialize();
+  }
 
   @Override
   public void autonomousPeriodic() {
-    }
+    pathController.execute();
+  }
   
 
   @Override
