@@ -94,16 +94,16 @@ public class Robot extends TimedRobot {
 
   /** PathWeaver Code **/
   RobotPathController pathController;
-  private final double b = 0.0;
-  private final double zeta = 0.0;
-  private final double kv = 0.0;
-  private final double ka = 0.0;
-  private final double ks = 0.0;
-  private final double robotWidth = 0.0; //TODO: measure the distance between wheel in METERS
-  PIDController leftGroup = new PIDController(0, 0, 0);
-  PIDController rightGroup = new PIDController(0, 0, 0);
-  CTREEncoder leftEncoder = new CTREEncoder(left1, false, 1.0);
-  CTREEncoder rightEncoder = new CTREEncoder(right1, false, 1.0);
+  private final double b = 2.0;
+  private final double zeta = 0.7;
+  private final double kv = 0.408;
+  private final double ka = 0.0219;
+  private final double ks = 0.555;
+  private final double robotWidth = 0.5588;
+  PIDController leftGroup = new PIDController(0.84, 0, 0);
+  PIDController rightGroup = new PIDController(0.84, 0, 0);
+  CTREEncoder leftEncoder = new CTREEncoder(left1, false, 0.00478053);
+  CTREEncoder rightEncoder = new CTREEncoder(right1, false, 0.00478053);
 
   @Override
   public void robotInit() {
@@ -111,7 +111,7 @@ public class Robot extends TimedRobot {
       mainDrive,
       left,
       right,
-      "bouncepath",
+      "Unnamed.path",
       gyro,
       new RamseteController(b, zeta),
       new SimpleMotorFeedforward(ks, kv, ka),
@@ -170,7 +170,7 @@ public class Robot extends TimedRobot {
     }
 
     if(!driver.getRawButton(1) && ( Math.abs(rot) >= 0.15 || Math.abs(y) >= 0.15)) {
-      mainDrive.curvatureDrive(-y, -rot/2., Math.abs(y) < 0.2);
+      mainDrive.curvatureDrive(-y, -rot/2.3, Math.abs(y) < 0.2);
       accelerator.set(0);
       shooter.set(0.0);
     } else if(driver.getRawButton(1) && limelight.hasValidTarget()) { //If the driver is pulling the trigger and the limelight has a target, go into vision-targeting mode
@@ -317,3 +317,18 @@ public class Robot extends TimedRobot {
   }
   }
 }
+
+/**
+ * To push:
+ * git add .
+ * git commit -m "A descriptive message"
+ * git push
+ * 
+ * To pull:
+ * git pull
+ */
+
+ //wheel width 8"
+ //gear ratio 2.5
+ //width 0.5588m
+ //length 28"
