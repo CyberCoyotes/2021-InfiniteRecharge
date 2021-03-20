@@ -102,8 +102,8 @@ public class Robot extends TimedRobot {
   private final double robotWidth = 0.5588;
   PIDController leftGroup = new PIDController(0.84, 0, 0);
   PIDController rightGroup = new PIDController(0.84, 0, 0);
-  CTREEncoder leftEncoder = new CTREEncoder(left1, false, 0.00478053);
-  CTREEncoder rightEncoder = new CTREEncoder(right1, false, 0.00478053);
+  CTREEncoder leftEncoder = new CTREEncoder(left1, false, 0.00012468196);
+  CTREEncoder rightEncoder = new CTREEncoder(right1, false, 0.00012468196);
 
   @Override
   public void robotInit() {
@@ -111,7 +111,7 @@ public class Robot extends TimedRobot {
       mainDrive,
       left,
       right,
-      "TrueBounce.wpilib.json",
+      "newbounce.wpilib.json",
       gyro,
       new RamseteController(b, zeta),
       new SimpleMotorFeedforward(ks, kv, ka),
@@ -150,7 +150,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    pathController.execute();
+    if(!pathController.isFinished()) {
+      pathController.execute();
+    } else {
+      mainDrive.arcadeDrive(0, 0);
+    }
   }
   
 

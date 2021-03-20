@@ -81,7 +81,7 @@ public class RobotPathController {
       CTREEncoder leftEncoder,
       CTREEncoder rightEncoder) {
           
-    String trajectoryJSON = "paths/" + pathName;
+    String trajectoryJSON = "paths/output/" + pathName;
     Trajectory trajectory = new Trajectory();
     try {
       Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
