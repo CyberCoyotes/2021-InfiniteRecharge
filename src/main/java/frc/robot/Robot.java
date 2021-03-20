@@ -111,7 +111,7 @@ public class Robot extends TimedRobot {
       mainDrive,
       left,
       right,
-      "Unnamed.path",
+      "TrueBounce.wpilib.json",
       gyro,
       new RamseteController(b, zeta),
       new SimpleMotorFeedforward(ks, kv, ka),
@@ -125,6 +125,7 @@ public class Robot extends TimedRobot {
     accelerator.setInverted(true);
     intake.setInverted(true);
     limelight.setPipeline(1);
+    angler.set(in);
   //  liftPID.setSetpoint(liftMin);
     //lifter.setInverted(true);
 
@@ -170,7 +171,7 @@ public class Robot extends TimedRobot {
     }
 
     if(!driver.getRawButton(1) && ( Math.abs(rot) >= 0.15 || Math.abs(y) >= 0.15)) {
-      mainDrive.curvatureDrive(-y, -rot/2.3, Math.abs(y) < 0.2);
+      mainDrive.curvatureDrive(-y, -rot/2, Math.abs(y) < 0.2);
       accelerator.set(0);
       shooter.set(0.0);
     } else if(driver.getRawButton(1) && limelight.hasValidTarget()) { //If the driver is pulling the trigger and the limelight has a target, go into vision-targeting mode
