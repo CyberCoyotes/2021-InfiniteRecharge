@@ -81,7 +81,7 @@ public class RobotPathController {
       CTREEncoder leftEncoder,
       CTREEncoder rightEncoder) {
           
-    String trajectoryJSON = "paths/output/" + pathName;
+    String trajectoryJSON = "paths/output/output/" + pathName;
     Trajectory trajectory = new Trajectory();
     try {
       Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
@@ -107,6 +107,8 @@ public class RobotPathController {
   }
 
   public void initialize() {
+    m_leftEncoder.reset();
+    m_rightEncoder.reset();
     m_prevTime = -1;
     var initialState = m_trajectory.sample(0);
     m_prevSpeeds = m_kinematics.toWheelSpeeds(new ChassisSpeeds(initialState.velocityMetersPerSecond, 0, initialState.curvatureRadPerMeter * initialState.velocityMetersPerSecond));
@@ -115,6 +117,7 @@ public class RobotPathController {
 
     m_leftController.reset();
     m_rightController.reset();
+    m_gyro.reset();
   }
 
   public void execute() {
@@ -149,7 +152,7 @@ public class RobotPathController {
 
 
     m_left.setVoltage(leftOutput);
-    m_right.setVoltage(-rightOutput);
+    m_right.setVoltage(rightOutput);
     m_mainDrive.feed();
 
     m_prevSpeeds = targetWheelSpeeds;

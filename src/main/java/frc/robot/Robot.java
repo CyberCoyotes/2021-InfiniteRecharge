@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -96,12 +97,12 @@ public class Robot extends TimedRobot {
   RobotPathController pathController;
   private final double b = 2.0;
   private final double zeta = 0.7;
-  private final double kv = 0.408;
-  private final double ka = 0.0219;
-  private final double ks = 0.555;
+  private final double kv = 4.03;
+  private final double ka = 0.111;
+  private final double ks = 0.521;
   private final double robotWidth = 0.5588;
-  PIDController leftGroup = new PIDController(0.84, 0, 0);
-  PIDController rightGroup = new PIDController(0.84, 0, 0);
+  PIDController leftGroup = new PIDController(1.36, 0, 0);
+  PIDController rightGroup = new PIDController(1.36, 0, 0);
   CTREEncoder leftEncoder = new CTREEncoder(left1, false, 0.00012468196);
   CTREEncoder rightEncoder = new CTREEncoder(right1, false, 0.00012468196);
 
@@ -131,6 +132,7 @@ public class Robot extends TimedRobot {
 
     CameraServer camera = CameraServer.getInstance();
     camera.startAutomaticCapture("cam0", 0);
+    teleopInit();
   }
 
   @Override
@@ -145,6 +147,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    left1.setNeutralMode(NeutralMode.Brake);
+    left2.setNeutralMode(NeutralMode.Brake);
+    right1.setNeutralMode(NeutralMode.Brake);
+    right2.setNeutralMode(NeutralMode.Brake);
     pathController.initialize();
   }
 
@@ -155,6 +161,19 @@ public class Robot extends TimedRobot {
     } else {
       mainDrive.arcadeDrive(0, 0);
     }
+  }
+
+  @Override
+  public void disabledInit() {
+    teleopInit();
+  }
+
+  @Override
+  public void teleopInit() {
+    left1.setNeutralMode(NeutralMode.Coast);
+    left2.setNeutralMode(NeutralMode.Coast);
+    right1.setNeutralMode(NeutralMode.Coast);
+    right2.setNeutralMode(NeutralMode.Coast);
   }
   
 
@@ -294,7 +313,8 @@ public class Robot extends TimedRobot {
   void read() {
     SmartDashboard.putNumber("Pressure", pressureSensor.getVoltage()*50.0-25.0);
     SmartDashboard.putNumber("Shooter Encoder Speed", leftShootEnc.getIntegratedSensorVelocity());
-    SmartDashboard.putNumber("Drive Encoder", leftDriveEnc.getIntegratedSensorPosition());
+    SmartDashboard.putNumber("Left Drive Encoder", leftEncoder.get());
+    SmartDashboard.putNumber("Right Drive Encoder", rightEncoder.get());
     SmartDashboard.putNumber("Limelight X Angle", limelight.getX());
     SmartDashboard.putNumber("Limelight Y Angle", limelight.getY());
     SmartDashboard.putBoolean("On Target", onTarget);
